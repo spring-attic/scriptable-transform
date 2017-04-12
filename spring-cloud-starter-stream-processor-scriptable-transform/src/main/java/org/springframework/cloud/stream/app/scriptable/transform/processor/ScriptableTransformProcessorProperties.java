@@ -15,11 +15,12 @@
  */
 package org.springframework.cloud.stream.app.scriptable.transform.processor;
 
+import java.util.Properties;
+import javax.validation.constraints.NotNull;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.Resource;
-
-import javax.validation.constraints.NotNull;
-import java.util.Properties;
+import org.springframework.validation.annotation.Validated;
 
 /**
  * Configuration properties for the Scriptable Transform Processor module.
@@ -27,6 +28,7 @@ import java.util.Properties;
  * @author Andy Clement
  */
 @ConfigurationProperties("scriptable-transformer")
+@Validated
 public class ScriptableTransformProcessorProperties {
 
 	/**
