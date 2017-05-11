@@ -50,6 +50,16 @@
 						<artifactId>scriptable-transform-app-dependencies</artifactId>
 						<version>${project.version}</version>
 					</bom>
+                    <requiresUnpack>
+                        <dependency>
+                            <groupId>org.python</groupId>
+                            <artifactId>jython-standalone</artifactId>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.jruby</groupId>
+                            <artifactId>jruby-complete</artifactId>
+                        </dependency>
+                    </requiresUnpack>
 					<generatedApps>
 						<scriptable-transform-processor>
 							<extraTestConfigClass>org.springframework.cloud.stream.app.test.script.ScriptableTestConfiguration.class</extraTestConfigClass>
