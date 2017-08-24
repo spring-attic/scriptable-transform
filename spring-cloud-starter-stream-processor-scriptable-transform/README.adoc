@@ -4,6 +4,26 @@
 A *Spring Cloud Stream* module that transforms messages using a script. The script body is supplied directly
 as a property value. The language of the script can be specified (groovy/javascript/ruby/python).
 
+== Input
+
+=== Headers
+
+N/A
+
+=== Payload
+
+* Any
+
+== Output
+
+=== Headers
+
+N/A
+
+=== Payload
+
+* Any
+
 == Options
 
 The **$$scriptable-transform$$** $$processor$$ has the following options:
@@ -19,7 +39,19 @@ $$scriptable-transformer.variables-location$$:: $$The location of a properties f
 == Build
 
 ```
-$ mvn clean package
+$ ./mvnw clean install -PgenerateApps
+$ cd apps
+```
+You can find the corresponding binder based projects here.
+You can then cd into one one of the folders and build it:
+```
+$ ./mvnw clean package
+```
+
+== Examples
+
+```
+java -jar scriptable-transform-processor.jar --language=ruby --script="return ""#{payload.upcase}"""
 ```
 
 
