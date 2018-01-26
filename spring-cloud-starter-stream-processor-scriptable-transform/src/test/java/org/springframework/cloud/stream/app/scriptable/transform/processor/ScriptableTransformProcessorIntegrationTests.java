@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 the original author or authors.
+ * Copyright 2015-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.stream.app.scriptable.transform.processor;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -29,7 +30,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isOneOf;
 import static org.junit.Assert.assertThat;
 import static org.springframework.cloud.stream.test.matcher.MessageQueueMatcher.receivesPayloadThat;
 
@@ -39,6 +39,7 @@ import static org.springframework.cloud.stream.test.matcher.MessageQueueMatcher.
  * @author Andy Clement
  * @author Artem Bilan
  * @author Gary Russell
+ * @author Chris Schaefer
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
@@ -58,7 +59,7 @@ public abstract class ScriptableTransformProcessorIntegrationTests {
 		public void testJavascriptFunctions() {
 			channels.input().send(new GenericMessage<Object>("hello world"));
 			// Different Java versions return different types for JavaScript results
-			assertThat(collector.forChannel(channels.output()), receivesPayloadThat(isOneOf(4, 4L, 4.0)));
+			assertThat(collector.forChannel(channels.output()), receivesPayloadThat(Matchers.<Number>isOneOf(4, 4L, 4.0)));
 		}
 	}
 

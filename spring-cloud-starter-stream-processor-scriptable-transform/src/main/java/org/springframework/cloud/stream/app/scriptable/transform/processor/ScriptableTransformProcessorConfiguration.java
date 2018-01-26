@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 the original author or authors.
+ * Copyright 2016-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.integration.annotation.Transformer;
-import org.springframework.integration.dsl.scripting.Scripts;
 import org.springframework.integration.handler.MessageProcessor;
 import org.springframework.integration.scripting.ScriptVariableGenerator;
+import org.springframework.integration.scripting.dsl.Scripts;
 
 /**
  * A Processor module that transforms messages using a supplied script. The script
@@ -43,6 +43,7 @@ import org.springframework.integration.scripting.ScriptVariableGenerator;
  *
  * @author Andy Clement
  * @author Gary Russell
+ * @author Chris Schaefer
  */
 @EnableBinding(Processor.class)
 @EnableConfigurationProperties(ScriptableTransformProcessorProperties.class)
@@ -77,7 +78,8 @@ public class ScriptableTransformProcessorConfiguration {
 			}
 
 		};
-		return Scripts.script(scriptResource)
+
+		return Scripts.processor(scriptResource)
 				.lang(language)
 				.variableGenerator(this.scriptVariableGenerator)
 				.get();
