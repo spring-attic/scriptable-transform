@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.springframework.cloud.stream.app.scriptable.transform.processor;
 
 import java.util.regex.Matcher;
@@ -28,10 +29,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
-import org.springframework.integration.annotation.Transformer;
+import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.handler.MessageProcessor;
 import org.springframework.integration.scripting.ScriptVariableGenerator;
 import org.springframework.integration.scripting.dsl.Scripts;
+import org.springframework.messaging.Message;
 
 /**
  * A Processor module that transforms messages using a supplied script. The script
@@ -44,6 +46,7 @@ import org.springframework.integration.scripting.dsl.Scripts;
  * @author Andy Clement
  * @author Gary Russell
  * @author Chris Schaefer
+ * @author Artme Bilan
  */
 @EnableBinding(Processor.class)
 @EnableConfigurationProperties(ScriptableTransformProcessorProperties.class)
@@ -62,22 +65,18 @@ public class ScriptableTransformProcessorConfiguration {
 	@Autowired
 	private ScriptableTransformProcessorProperties properties;
 
+	// TODO until https://jira.spring.io/browse/INT-4397
+	@ServiceActivator(inputChannel = Processor.INPUT, outputChannel = Processor.OUTPUT)
+	public Object processor(Message<?> message) {
+		return transformer().processMessage(message);
+	}
+
 	@Bean
-	@Transformer(inputChannel = Processor.INPUT, outputChannel = Processor.OUTPUT)
 	public MessageProcessor<?> transformer() {
 		String language = this.properties.getLanguage();
 		String script = this.properties.getScript();
 		logger.info(String.format("Input script is '%s', language is '%s'", script, language));
-		Resource scriptResource = new ByteArrayResource(decodeScript(script).getBytes()) {
-
-			// TODO until INT-3976
-			@Override
-			public String getFilename() {
-				// Only the groovy script processor enforces this requirement for a name
-				return "StaticScript";
-			}
-
-		};
+		Resource scriptResource = new ByteArrayResource(decodeScript(script).getBytes());
 
 		return Scripts.processor(scriptResource)
 				.lang(language)
