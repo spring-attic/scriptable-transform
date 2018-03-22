@@ -16,6 +16,10 @@
 
 package org.springframework.cloud.stream.app.scriptable.transform.processor;
 
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.springframework.cloud.stream.test.matcher.MessageQueueMatcher.receivesPayloadThat;
+
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,10 +32,6 @@ import org.springframework.cloud.stream.test.binder.MessageCollector;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.springframework.cloud.stream.test.matcher.MessageQueueMatcher.receivesPayloadThat;
 
 /**
  * Integration Tests for the Script Transform Processor.
@@ -52,7 +52,12 @@ public abstract class ScriptableTransformProcessorIntegrationTests {
 	@Autowired
 	protected MessageCollector collector;
 
-	@SpringBootTest({"scriptable-transformer.script=function add(a,b) { return a+b;};add(1,3)", "scriptable-transformer.language=js"})
+	@SpringBootTest(
+			{
+					"scriptable-transformer.script=function add(a,b) { return a+b;}; add(1,3)",
+					"scriptable-transformer.language=js",
+					"spring.cloud.stream.bindings.output.contentType=application/x-java-object"
+			})
 	public static class JavascriptScriptProperty1Tests extends ScriptableTransformProcessorIntegrationTests {
 
 		@Test
@@ -61,9 +66,15 @@ public abstract class ScriptableTransformProcessorIntegrationTests {
 			// Different Java versions return different types for JavaScript results
 			assertThat(collector.forChannel(channels.output()), receivesPayloadThat(Matchers.<Number>isOneOf(4, 4L, 4.0)));
 		}
+
 	}
 
-	@SpringBootTest({"scriptable-transformer.script=payload+foo", "scriptable-transformer.language=js", "scriptable-transformer.variables=foo=\\\\\40WORLD"})
+	@SpringBootTest(
+			{
+					"scriptable-transformer.script=payload+foo",
+					"scriptable-transformer.language=js",
+					"scriptable-transformer.variables=foo=\\\\\40WORLD"
+			})
 	public static class JavascriptScriptProperty2Tests extends ScriptableTransformProcessorIntegrationTests {
 
 		@Test
@@ -74,7 +85,13 @@ public abstract class ScriptableTransformProcessorIntegrationTests {
 
 	}
 
-	@SpringBootTest({"scriptable-transformer.script=payload*limit", "scriptable-transformer.language=js", "scriptable-transformer.variables=limit=5"})
+	@SpringBootTest(
+			{
+					"scriptable-transformer.script=payload*limit",
+					"scriptable-transformer.language=js",
+					"scriptable-transformer.variables=limit=5",
+					"spring.cloud.stream.bindings.output.contentType=application/x-java-object"
+			})
 	public static class JavascriptScriptProperty3Tests extends ScriptableTransformProcessorIntegrationTests {
 
 		@Test
@@ -85,7 +102,12 @@ public abstract class ScriptableTransformProcessorIntegrationTests {
 
 	}
 
-	@SpringBootTest({"scriptable-transformer.script=payload+foo", "scriptable-transformer.language=groovy", "scriptable-transformer.variables=foo=\\\\\40WORLD"})
+	@SpringBootTest(
+			{
+					"scriptable-transformer.script=payload+foo",
+					"scriptable-transformer.language=groovy",
+					"scriptable-transformer.variables=foo=\\\\\40WORLD"
+			})
 	public static class GroovyScriptProperty1Tests extends ScriptableTransformProcessorIntegrationTests {
 
 		@Test
@@ -96,8 +118,12 @@ public abstract class ScriptableTransformProcessorIntegrationTests {
 
 	}
 
-	@SpringBootTest({"scriptable-transformer.script=payload.substring(0, limit as int) + foo", "scriptable-transformer.language=groovy",
-			"scriptable-transformer.variables=limit=5\\n foo=\\\\\40WORLD"})
+	@SpringBootTest(
+			{
+					"scriptable-transformer.script=payload.substring(0, limit as int) + foo",
+					"scriptable-transformer.language=groovy",
+					"scriptable-transformer.variables=limit=5\\n foo=\\\\\40WORLD"
+			})
 	public static class GroovyScriptProperty2Tests extends ScriptableTransformProcessorIntegrationTests {
 
 		@Test
@@ -108,7 +134,10 @@ public abstract class ScriptableTransformProcessorIntegrationTests {
 
 	}
 
-	@SpringBootTest({"scriptable-transformer.script=return \"\"#{payload.upcase}\"\"", "scriptable-transformer.language=ruby"})
+	@SpringBootTest(
+			{ "scriptable-transformer.script=return \"\"#{payload.upcase}\"\"",
+					"scriptable-transformer.language=ruby"
+			})
 	public static class RubyScriptProperty1Tests extends ScriptableTransformProcessorIntegrationTests {
 
 		@Test
@@ -119,7 +148,12 @@ public abstract class ScriptableTransformProcessorIntegrationTests {
 
 	}
 
-	@SpringBootTest({"scriptable-transformer.script=\"def foo(x)\\n  return x+5\\nend\\nfoo(payload)\\n\"", "scriptable-transformer.language=ruby"})
+	@SpringBootTest(
+			{
+					"scriptable-transformer.script=\"def foo(x)\\n  return x+5\\nend\\nfoo(payload)\\n\"",
+					"scriptable-transformer.language=ruby",
+					"spring.cloud.stream.bindings.output.contentType=application/x-java-object"
+			})
 	public static class RubyScriptProperty2Tests extends ScriptableTransformProcessorIntegrationTests {
 
 		@Test
@@ -132,8 +166,12 @@ public abstract class ScriptableTransformProcessorIntegrationTests {
 
 	// Python not currently supported, problems running it in SCDF
 
-	@SpringBootTest({"scriptable-transformer.script=\"def multiply(x,y):\\n  return x*y\\nanswer = multiply(payload,5)\\n\"",
-			"scriptable-transformer.language=python"})
+	@SpringBootTest(
+			{
+					"scriptable-transformer.script=\"def multiply(x,y):\\n  return x*y\\nanswer = multiply(payload,5)\\n\"",
+					"scriptable-transformer.language=python",
+					"spring.cloud.stream.bindings.output.contentType=application/x-java-object"
+			})
 	public static class PythonScriptProperty1Tests extends ScriptableTransformProcessorIntegrationTests {
 
 		@Test
@@ -144,8 +182,11 @@ public abstract class ScriptableTransformProcessorIntegrationTests {
 
 	}
 
-	@SpringBootTest({"scriptable-transformer.script=\"def concat(x,y):\\n  return x+y\\nanswer = concat(\"\"hello \"\",payload)\\n\"",
-			"scriptable-transformer.language=python"})
+	@SpringBootTest(
+			{
+					"scriptable-transformer.script=\"def concat(x,y):\\n  return x+y\\nanswer = concat(\"\"hello \"\",payload)\\n\"",
+					"scriptable-transformer.language=python"
+			})
 	public static class PythonScriptProperty2Tests extends ScriptableTransformProcessorIntegrationTests {
 
 		@Test
