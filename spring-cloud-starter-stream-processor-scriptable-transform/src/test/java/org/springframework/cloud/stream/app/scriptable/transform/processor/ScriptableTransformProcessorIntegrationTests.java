@@ -197,6 +197,21 @@ public abstract class ScriptableTransformProcessorIntegrationTests {
 
 	}
 
+	@SpringBootTest(
+			{
+					"scriptable-transformer.script=\"@Grab('org.grooscript:grooscript:1.3.0')\\n import org.grooscript.GrooScript\\n GrooScript.convert(new String(payload))\\n\"",
+					"scriptable-transformer.language=groovy"
+			})
+	public static class GroovyScriptWithGrabTests extends ScriptableTransformProcessorIntegrationTests {
+
+		@Test
+		public void testRuby() {
+			channels.input().send(new GenericMessage<Object>("def age=18"));
+			assertThat(collector.forChannel(channels.output()), receivesPayloadThat(is("var age = 18;\n")));
+		}
+
+	}
+
 	@SpringBootApplication
 	public static class ScriptableTransformProcessorApplication {
 
