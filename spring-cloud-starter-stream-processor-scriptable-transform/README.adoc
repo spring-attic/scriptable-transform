@@ -42,15 +42,26 @@ $ ./mvnw clean install -PgenerateApps
 $ cd apps
 ```
 You can find the corresponding binder based projects here.
-You can then cd into one one of the folders and build it:
+You can then `cd` into one one of the folders and build it:
 ```
 $ ./mvnw clean package
 ```
+Folder `target` will then contain generated jars (_original_, _repackaged_ also known as _**executable** jar_, with _javadoc_, etc.) of which the _executable_ jar can be used directly with `java` to run the application.
+
+Name of executable jar follows the pattern:
+`scriptable-transform-processor-`**BINDER**`-`**VERSION**`.jar`
+
 
 == Examples
 
+Starting from top-level folder, assuming you target rabbitmq and your `pom.xml` has `2.1.0.RELEASE` for the `project.version` property, you can build and run the standalone application with :
+
 ```
-java -jar scriptable-transform-processor.jar --language=ruby --script="return ""#{payload.upcase}"""
+$ ./mvnw clean install -PgenerateApps
+$ cd apps/scriptable-transform-processor-rabbit
+$ ./mvnw clean package
+$ java -jar target/scriptable-transform-processor-rabbit-2.1.0.RELEASE.jar --scriptable-transformer.language=ruby --scriptable-transformer.script="return ""#{payload.upcase}"""
 ```
+
 //end::ref-doc[]
 

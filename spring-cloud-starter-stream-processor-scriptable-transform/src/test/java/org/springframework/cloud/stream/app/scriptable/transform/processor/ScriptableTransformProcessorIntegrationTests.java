@@ -205,7 +205,7 @@ public abstract class ScriptableTransformProcessorIntegrationTests {
 	public static class GroovyScriptWithGrabTests extends ScriptableTransformProcessorIntegrationTests {
 
 		@Test
-		public void testRuby() {
+		public void testGroovyToJavascript() {
 			channels.input().send(new GenericMessage<Object>("def age=18"));
 			assertThat(collector.forChannel(channels.output()), receivesPayloadThat(is("var age = 18;"
 					+ System.getProperty("line.separator"))));
