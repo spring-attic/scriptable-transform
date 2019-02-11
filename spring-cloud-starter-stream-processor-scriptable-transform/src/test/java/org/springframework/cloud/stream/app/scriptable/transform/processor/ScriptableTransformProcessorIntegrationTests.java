@@ -207,7 +207,8 @@ public abstract class ScriptableTransformProcessorIntegrationTests {
 		@Test
 		public void testRuby() {
 			channels.input().send(new GenericMessage<Object>("def age=18"));
-			assertThat(collector.forChannel(channels.output()), receivesPayloadThat(is("var age = 18;\n")));
+			assertThat(collector.forChannel(channels.output()), receivesPayloadThat(is("var age = 18;"
+					+ System.getProperty("line.separator"))));
 		}
 
 	}
