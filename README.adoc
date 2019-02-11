@@ -4,3 +4,4 @@ To learn more about this application and the supported properties, please review
 
 include::spring-cloud-starter-stream-processor-scriptable-transform/README.adoc[]
 
+NOTE: for those on Windows that want to checkout the sources from github, ensure you have `longpaths` enabled : `git config --system core.longpaths true`.
