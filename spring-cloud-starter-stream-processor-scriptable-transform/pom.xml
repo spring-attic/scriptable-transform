@@ -98,6 +98,10 @@
 							<noAppSpecificTestSupportArtifact>true</noAppSpecificTestSupportArtifact>
 						</scriptable-transform-processor>
 					</generatedApps>
+					<enableContainerImageMetadata>true</enableContainerImageMetadata>
+					<metadataSourceTypeFilters>
+						<filter>org.springframework.cloud.stream.app.scriptable.transform.processor.ScriptableTransformProcessorProperties</filter>
+					</metadataSourceTypeFilters>
 				</configuration>
 			</plugin>
 		</plugins>
